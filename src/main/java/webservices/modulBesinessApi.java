@@ -12,7 +12,7 @@ public class modulBesinessApi {
 
     ModuleBusiness helper = new ModuleBusiness();
 
-    // GET /module/list  → liste de tous les modules
+
     @Path("/list")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -20,7 +20,7 @@ public class modulBesinessApi {
         return Response.status(200).entity(helper.getAllModules()).build();
     }
 
-    // POST /module/new  → créer un nouveau module
+
     @Path("/new")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -33,5 +33,48 @@ public class modulBesinessApi {
         }
     }
 
+    @Path("/{matricule}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getModuleByMatricule(@PathParam("matricule") String matricule) {
+        Module m = helper.getModuleByMatricule(matricule);
+        if (m != null) {
+            return Response.ok(m).build();
+        } else {
+            return Response.status(404).entity("Module introuvable").build();
+        }
+    }
+
+    @Path("/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getModulesByType(@QueryParam("type") Module.TypeModule type) {
+        return Response.ok(helper.getModulesByType(type)).build();
+    }
+
+    
+    @Path("/{matricule}")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response updateModule(@PathParam("matricule") String matricule, Module updatedModule) {
+        if (helper.updateModule(matricule, updatedModule)) {
+            return Response.status(200).entity("ok").build();
+        } else {
+            return Response.status(400).entity("Erreur").build();
+        }
+    }
+
+
+    @Path("/{matricule}")
+    @DELETE
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deleteModule(@PathParam("matricule") String matricule) {
+        if (helper.deleteModule(matricule)) {
+            return Response.status(200).entity("ok").build();
+        } else {
+            return Response.status(400).entity("Erreur").build();
+        }
+    }
 }
 
